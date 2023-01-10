@@ -55,7 +55,7 @@ resource "aws_key_pair" "sample_key" {
 resource "aws_instance" "sample_server" {
   ami                    = data.aws_ami.ubuntu.id
   instance_type          = "t2.micro"
-  vpc_security_group_ids = ["sg-0d2411db69a112a30"]
+  vpc_security_group_ids = ["sg-0d2411db69a112a30"] //this is the EC2 instance used to execute terraform security group id
   key_name               = aws_key_pair.sample_key.key_name
 
   tags = {
