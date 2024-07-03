@@ -47,6 +47,8 @@ jobs:
 
   goodbye:
     runs-on: ubuntu-latest
+    needs: ['hello', 'job2']  # this has to wait for the hello job to complete successfully
+    if: condition == condition # only if the condition is true, the job will be run
     steps:
       - name: goodbye
         run: echo "Good-Bye"
