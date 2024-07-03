@@ -52,3 +52,52 @@ jobs:
         run: echo "Good-Bye"
         shell: bash
 ```
+
+issue.yml
+```yml
+name: create a comment on new issues
+
+on:
+  issues:
+    types:
+      - opened
+
+jobs:
+  comment-with-action:
+    runs-on: ubuntu-latest
+    steps:
+      - name: "dump github context"
+        run: echo '${{ toJSON(github.event) }}' | jq
+        shell: bash
+    
+      - name: Create comment
+        uses: peter-evans/create-or-update-comment@v3
+        with:
+          issue-number: ${{ github.event.issue.number }}
+          body: |
+            This is a multi-line test comment
+              - With GitHub **Markdown** :sparkles:
+              - Created by [create-or-update-comment][1]
+
+              [1]: https://github.com/peter-evans/create-or-update-comment
+          reactions: '+1'          
+
+  comment-with-api:
+    runs-on: ubuntu-latest
+    steps:
+      - name: create comment with API
+        run: |
+          gh api -X POST \
+            http://api.github.com/repo/${REPOSITORY}/issues/${ISSUE_NUMBER}/comments \
+            -f body='
+            comment from 
+            API
+            multiple lines
+            '
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ORGANIZATION: ${{ github.event.user.login }}
+          REPOSITORY: ${{ github.event.repository.full_name }}
+          ISSUE_NUMBER: ${{ github.event.issue.number}}
+
+```
